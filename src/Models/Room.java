@@ -82,6 +82,10 @@ public class Room {
         this.reservations = reservations;
     }
 
+    public int getCapacity() {
+        return adultCapacity + childCapacity;
+    }
+
     // Method to check availability for a given date range
     public boolean isAvailable(LocalDate startDate, LocalDate endDate) {
         for (Reservation reservation : reservations) {
@@ -98,7 +102,5 @@ public class Room {
         this.reservations.add(reservation);
     }
 
-    public int getCapacity() {
-        return adultCapacity + childCapacity;
-    }
+
 }
