@@ -4,93 +4,93 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Hotel {
-    // Atributos
-    private String nombre;
-    private String ciudad;
-    private TipoAlojamiento tipoAlojamiento;
-    private double calificacion; // del 1 al 5
-    private boolean incluyeAlmuerzo; // para Dia de Sol
-    private List<Habitacion> habitaciones;
-    private List<Reservacion> reservas;
+    // Attributes
+    private String name; // Nombre del hotel
+    private String city; // Ciudad donde está ubicado
+    private AccommodationType accommodationType; // Tipo de alojamiento
+    private double rating; // Calificación del 1 al 5
+    private boolean includesLunch; // Indica si incluye almuerzo (por ejemplo, para Día de Sol)
+    private List<Room> rooms; // Lista de habitaciones
+    private List<Room> reservations; // Lista de reservaciones
 
     // Constructor
-    public Hotel(String nombre, String ciudad, TipoAlojamiento tipoAlojamiento, double calificacion, boolean incluyeAlmuerzo) {
-        this.nombre = nombre;
-        this.ciudad = ciudad;
-        this.tipoAlojamiento = tipoAlojamiento;
-        this.calificacion = calificacion;
-        this.incluyeAlmuerzo = incluyeAlmuerzo;
-        this.habitaciones = new ArrayList<>();
-        this.reservas = new ArrayList<>();
+    public Hotel(String name, String city, AccommodationType accommodationType, double rating, boolean includesLunch) {
+        this.name = name;
+        this.city = city;
+        this.accommodationType = accommodationType;
+        this.rating = rating;
+        this.includesLunch = includesLunch;
+        this.rooms = new ArrayList<>();
+        this.reservations = new ArrayList<Room>();
     }
 
-    // Getters y Setters
-    public String getNombre() {
-        return nombre;
+    // Getters and Setters
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getCiudad() {
-        return ciudad;
+    public String getCity() {
+        return city;
     }
 
-    public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public TipoAlojamiento getTipoAlojamiento() {
-        return tipoAlojamiento;
+    public AccommodationType getAccommodationType() {
+        return accommodationType;
     }
 
-    public void setTipoAlojamiento(TipoAlojamiento tipoAlojamiento) {
-        this.tipoAlojamiento = tipoAlojamiento;
+    public void setAccommodationType(AccommodationType accommodationType) {
+        this.accommodationType = accommodationType;
     }
 
-    public double getCalificacion() {
-        return calificacion;
+    public double getRating() {
+        return rating;
     }
 
-    public void setCalificacion(double calificacion) {
-        if (calificacion >= 1 && calificacion <= 5) {
-            this.calificacion = calificacion;
+    public void setRating(double rating) {
+        if (rating >= 1 && rating <= 5) {
+            this.rating = rating;
         } else {
             throw new IllegalArgumentException("La calificación debe estar entre 1 y 5");
         }
     }
 
-    public boolean isIncluyeAlmuerzo() {
-        return incluyeAlmuerzo;
+    public boolean isIncludesLunch() {
+        return includesLunch;
     }
 
-    public void setIncluyeAlmuerzo(boolean incluyeAlmuerzo) {
-        this.incluyeAlmuerzo = incluyeAlmuerzo;
+    public void setIncludesLunch(boolean includesLunch) {
+        this.includesLunch = includesLunch;
     }
 
-    public List<Habitacion> getHabitaciones() {
-        return habitaciones;
+    public List<Room> getRooms() {
+        return rooms;
     }
 
-    public void setHabitaciones(List<Habitacion> habitaciones) {
-        this.habitaciones = habitaciones;
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
     }
 
-    public List<Reservacion> getReservas() {
-        return reservas;
+    public List<Room> getReservations() {
+        return reservations;
     }
 
-    public void setReservas(List<Reservacion> reservas) {
-        this.reservas = reservas;
+    public void setReservations(List<Room> reservations) {
+        this.reservations = reservations;
     }
 
-    // Métodos adicionales para agregar habitaciones y reservas
-    public void agregarHabitacion(Habitacion habitacion) {
-        this.habitaciones.add(habitacion);
+    // Additional methods to add rooms and reservations
+    public void addRoom(Room room) {
+        this.rooms.add(room);
     }
 
-    public void agregarReservacion(Reservacion reservacion) {
-        this.reservas.add(reservacion);
+    public void addReservation(Room reservation) {
+        this.reservations.add(reservation);
     }
 }

@@ -1,6 +1,6 @@
 package Models;
 
-public enum TipoAlojamiento {
+public enum AccommodationType {
     HOTEL,
     APARTAMENTO,
     FINCA,
