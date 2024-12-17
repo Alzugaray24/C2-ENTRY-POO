@@ -4,7 +4,6 @@ import Models.Hotel;
 import data.HotelDataLoader;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,7 +20,7 @@ public class Main {
                 System.out.println("1. Buscar hoteles");
                 System.out.println("2. Confirmar habitaciones disponibles");
                 System.out.println("3. Realizar una reserva");
-//                System.out.println("4. Ver reservas");
+                System.out.println("4. Actualizar una reserva");
                 System.out.println("5. Salir");
                 System.out.print("Seleccione una opción: ");
                 option = Integer.parseInt(scanner.nextLine());
@@ -36,10 +35,10 @@ public class Main {
                     case 3:
                         makeReservationOption(hotelService, scanner);
                         break;
-//                    case 4:
-//                        viewReservationsOption(hotelService, scanner);
-//                        break;
                     case 4:
+                        updateReservationOption(hotelService, scanner);
+                        break;
+                    case 5:
                         System.out.println("Gracias por usar el sistema. ¡Hasta luego!");
                         break;
                     default:
@@ -68,6 +67,9 @@ public class Main {
             System.out.print("Nacionalidad: ");
             String nationality = scanner.nextLine();
 
+            System.out.print("Fecha de nacimiento (AAAA-MM-DD): ");
+            LocalDate birthday = LocalDate.parse(scanner.nextLine());
+
             System.out.print("Número de Teléfono: ");
             String phoneNumber = scanner.nextLine();
 
@@ -87,7 +89,7 @@ public class Main {
             int children = Integer.parseInt(scanner.nextLine());
 
             String result = hotelService.makeReservation(name, lastName, email, nationality, phoneNumber,
-                    arrivalTime, startDate, endDate, adults, children);
+                    arrivalTime, startDate, endDate, adults, children, birthday);
             System.out.println(result);
         } catch (Exception e) {
             System.out.println("Error al realizar la reserva. Verifique los datos ingresados e intente nuevamente.");
@@ -143,7 +145,7 @@ public class Main {
     // Método para buscar hoteles
     private static void searchHotelsOption(HotelService hotelService, Scanner scanner) {
         try {
-            List<String> cities = getAvailableCities(hotelService);
+            List<String> cities = Utils.HotelUtils.getAvailableCities(hotelService); // Usar el método utilitario
             System.out.println("Ciudades disponibles:");
             for (int i = 0; i < cities.size(); i++) {
                 System.out.println((i + 1) + ". " + cities.get(i));
@@ -193,14 +195,47 @@ public class Main {
         }
     }
 
-    private static List<String> getAvailableCities(HotelService hotelService) {
-        List<String> cities = new ArrayList<>();
-        for (Hotel hotel : hotelService.getHotels()) {
-            if (!cities.contains(hotel.getCity())) {
-                cities.add(hotel.getCity());
+    private static void updateReservationOption(HotelService hotelService, Scanner scanner) {
+        try {
+            System.out.println("\n--- Actualizar una Reserva ---");
+
+            System.out.print("Email: ");
+            String email = scanner.nextLine();
+
+            System.out.print("Fecha de nacimiento (AAAA-MM-DD): ");
+            LocalDate dateOfBirth = LocalDate.parse(scanner.nextLine());
+
+            // Verify if the reservation exists with the provided email and date of birth
+            boolean reservationExists = hotelService.getHotels().stream()
+                    .flatMap(hotel -> hotel.getReservations().stream())
+                    .anyMatch(reservation -> reservation.getEmail().equalsIgnoreCase(email) &&
+                            reservation.getDateOfBirth().equals(dateOfBirth));
+
+            if (!reservationExists) {
+                throw new IllegalArgumentException("No se encontró una reserva con los datos proporcionados.");
             }
+
+            System.out.println("¿Desea cambiar de habitación o de alojamiento?");
+            System.out.println("1. Cambiar de habitación");
+            System.out.println("2. Cambiar de alojamiento");
+            int option = Integer.parseInt(scanner.nextLine());
+
+            int roomOption = 0;
+            int newRoomOption = 0;
+
+            if (option == 1) {
+                System.out.print("Seleccione la habitación actual (número): ");
+                roomOption = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Seleccione la nueva habitación (número): ");
+                newRoomOption = Integer.parseInt(scanner.nextLine());
+            }
+
+            String result = hotelService.updateReservation(email, dateOfBirth, option, roomOption, newRoomOption);
+            System.out.println(result);
+        } catch (Exception e) {
+            System.out.println("Error al actualizar la reserva. Verifique los datos ingresados e intente nuevamente.");
         }
-        return cities;
     }
 
 }

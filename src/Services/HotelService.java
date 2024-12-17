@@ -8,6 +8,7 @@ import Models.Room;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class HotelService implements IHotelService {
     private final List<Hotel> hotels;
@@ -101,7 +102,8 @@ public class HotelService implements IHotelService {
     @Override
     public String makeReservation(String firstName, String lastName, String email, String nationality,
                                   String phoneNumber, String arrivalTime, LocalDate startDate,
-                                  LocalDate endDate, int adults, int children) {
+                                  LocalDate endDate, int adults, int children, LocalDate birthday) {
+        // Validaciones iniciales
         if (firstName == null || lastName == null || email == null || phoneNumber == null) {
             throw new IllegalArgumentException("Los datos personales no pueden estar vacíos.");
         }
@@ -109,6 +111,7 @@ public class HotelService implements IHotelService {
             throw new IllegalArgumentException("Las fechas de inicio y fin no son válidas.");
         }
 
+        // Buscar hoteles disponibles
         List<Hotel> availableHotels = new ArrayList<>();
         for (Hotel hotel : hotels) {
             for (Room room : hotel.getRooms()) {
@@ -123,26 +126,67 @@ public class HotelService implements IHotelService {
             throw new IllegalStateException("No hay hoteles con habitaciones disponibles para las fechas y condiciones indicadas.");
         }
 
-        // Selección del hotel y habitación
+        // Selección del primer hotel disponible y habitación
         Hotel selectedHotel = availableHotels.get(0);
         Room selectedRoom = selectedHotel.getRooms().stream()
                 .filter(room -> room.isAvailable(startDate, endDate) && room.getCapacity() >= (adults + children))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No hay habitaciones disponibles en el hotel seleccionado."));
 
-        // Crear reserva
+        // Crear la reserva
         Reservation reservation = new Reservation(
                 firstName, lastName, email, nationality, phoneNumber,
-                startDate, endDate, adults, children, 1, selectedRoom.getType(), arrivalTime
+                startDate, endDate, adults, children, 1, selectedRoom.getType(), arrivalTime, birthday, 0
         );
 
+        // Actualizar la habitación y agregar la reserva al hotel
         selectedRoom.setAvailability(false);
         selectedHotel.addReservation(reservation);
 
-        return "Reserva realizada con éxito.\n" +
-                "Hotel: " + selectedHotel.getName() + "\n" +
-                "Habitación: " + selectedRoom.getType() + "\n" +
-                "Fecha de llegada: " + startDate + "\n" +
-                "Fecha de salida: " + endDate;
+        // Mostrar detalles completos de la reserva usando toString()
+        return "Reserva realizada con éxito.\n" + reservation.toString();
+    }
+
+    @Override
+    public String updateReservation(String email, LocalDate dateOfBirth, int option, int roomOption, int newRoomOption) {
+        for (Hotel hotel : hotels) {
+            Optional<Reservation> reservationOpt = hotel.getReservations().stream()
+                    .filter(reservation -> reservation.getEmail().equalsIgnoreCase(email) &&
+                            reservation.getDateOfBirth().equals(dateOfBirth))
+                    .findFirst();
+
+            if (reservationOpt.isPresent()) {
+                Reservation reservation = reservationOpt.get();
+                // Mostrar datos de la reserva
+                System.out.println("Datos de la reserva:");
+                System.out.println("Hotel: " + hotel.getName());
+                System.out.println("Habitación: " + reservation.getRoomType());
+                System.out.println("Fecha de llegada: " + reservation.getStartDate());
+                System.out.println("Fecha de salida: " + reservation.getEndDate());
+
+                if (option == 1) {
+                    // Cambiar de habitación
+                    Room currentRoom = hotel.getRooms().get(roomOption - 1);
+                    List<Room> availableRooms = hotel.getRooms().stream()
+                            .filter(room -> room.isAvailable(reservation.getStartDate(), reservation.getEndDate())
+                                    && room.getCapacity() >= (reservation.getAdultCount() + reservation.getChildCount()))
+                            .toList();
+
+                    Room newRoom = availableRooms.get(newRoomOption - 1);
+                    currentRoom.setAvailability(true);
+                    newRoom.setAvailability(false);
+                    reservation.setRoomType(newRoom.getType());
+
+                    return "Reserva actualizada con éxito. Nueva habitación: " + newRoom.getType();
+                } else if (option == 2) {
+                    // Cambiar de alojamiento
+                    hotel.getReservations().remove(reservation);
+                    return "Reserva eliminada. Por favor, cree una nueva reserva.";
+                } else {
+                    return "Opción no válida.";
+                }
+            }
+        }
+        return "No se encontró la reserva.";
     }
 }
