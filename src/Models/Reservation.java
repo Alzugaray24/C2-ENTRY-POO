@@ -1,56 +1,67 @@
+// src/Models/Reservation.java
 package Models;
 
 import java.time.LocalDate;
 
-public class Reservation {
-    // Attributes
-    private String clientFirstName; // Nombre del cliente
-    private String clientLastName; // Apellido del cliente
-    private String clientEmail; // Email del cliente
-    private String nationality; // Nacionalidad del cliente
-    private String phoneNumber; // Número de teléfono del cliente
-    private LocalDate startDate; // Fecha de inicio de la reserva
-    private LocalDate endDate; // Fecha de fin de la reserva
-    private int adultCount; // Cantidad de adultos
-    private int childCount; // Cantidad de niños
-    private String roomType; // Tipo de habitación reservada
-    private LocalDate dateOfBirth; // Fecha de nacimiento del cliente
+public class Reservation extends Person {
+    private String nationality;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int adultCount;
+    private int childCount;
+    private String roomType;
 
-    // Constructor
-    public Reservation(String clientFirstName, String clientLastName, String clientEmail,
-                       String nationality, String phoneNumber, LocalDate startDate,
-                       LocalDate endDate, int adultCount, int childCount,
-                       int roomCount, String roomType, String arrivalTime, LocalDate dateOfBirth, int id) {
-        this.clientFirstName = clientFirstName;
-        this.clientLastName = clientLastName;
-        this.clientEmail = clientEmail;
+    public Reservation(String firstName, String lastName, String email, String nationality, String phoneNumber,
+                       LocalDate startDate, LocalDate endDate, int adultCount, int childCount,
+                       String roomType, LocalDate dateOfBirth) {
+        super(firstName, lastName, email, phoneNumber, dateOfBirth);
         this.nationality = nationality;
-        this.phoneNumber = phoneNumber;
         this.startDate = startDate;
         this.endDate = endDate;
         this.adultCount = adultCount;
         this.childCount = childCount;
         this.roomType = roomType;
-        this.dateOfBirth = dateOfBirth;
     }
 
     // Getters and Setters
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
 
     public LocalDate getStartDate() {
         return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     public LocalDate getEndDate() {
         return endDate;
     }
 
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
 
     public int getAdultCount() {
         return adultCount;
     }
 
+    public void setAdultCount(int adultCount) {
+        this.adultCount = adultCount;
+    }
+
     public int getChildCount() {
         return childCount;
+    }
+
+    public void setChildCount(int childCount) {
+        this.childCount = childCount;
     }
 
     public String getRoomType() {
@@ -59,26 +70,5 @@ public class Reservation {
 
     public void setRoomType(String roomType) {
         this.roomType = roomType;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public String getEmail() {
-        return clientEmail;
-    }
-
-    @Override
-    public String toString() {
-        return "Detalles de la Reserva:\n" +
-                "Cliente: " + clientFirstName + " " + clientLastName + "\n" +
-                "Email: " + clientEmail + "\n" +
-                "Teléfono: " + phoneNumber + "\n" +
-                "Nacionalidad: " + nationality + "\n" +
-                "Fecha de nacimiento: " + dateOfBirth + "\n" +
-                "Estadía: Desde " + startDate + " hasta " + endDate + "\n" +
-                "Habitación: " + roomType + "\n" +
-                "Adultos: " + adultCount + ", Niños: " + childCount;
     }
 }
