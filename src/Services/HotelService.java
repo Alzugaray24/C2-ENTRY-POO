@@ -2,6 +2,7 @@ package Services;
 
 import Models.AccommodationType;
 import Models.Hotel;
+import Models.Reservation;
 import Models.Room;
 
 import java.time.LocalDate;
@@ -12,6 +13,9 @@ public class HotelService implements IHotelService {
     private final List<Hotel> hotels;
 
     public HotelService(List<Hotel> hotels) {
+        if (hotels == null || hotels.isEmpty()) {
+            throw new IllegalArgumentException("La lista de hoteles no puede estar vacía.");
+        }
         this.hotels = hotels;
     }
 
@@ -24,42 +28,29 @@ public class HotelService implements IHotelService {
     public List<String> searchHotels(String city, AccommodationType accommodationType,
                                      LocalDate startDate, LocalDate endDate,
                                      int adults, int children, int rooms) {
+        if (city == null || city.isBlank()) throw new IllegalArgumentException("La ciudad no puede estar vacía.");
+        if (startDate == null || endDate == null || !startDate.isBefore(endDate)) {
+            throw new IllegalArgumentException("Las fechas de inicio y fin no son válidas.");
+        }
+
         List<String> filteredHotels = new ArrayList<>();
 
         for (Hotel hotel : hotels) {
-            // Filtrar por ciudad
             if (!hotel.getCity().equalsIgnoreCase(city)) continue;
-
-            // Filtrar por tipo de alojamiento si se especifica
             if (accommodationType != null && hotel.getAccommodationType() != accommodationType) continue;
 
             StringBuilder hotelInfo = new StringBuilder();
             boolean hasAvailableRooms = false;
 
-            hotelInfo.append("\n---------------------------------------\n");
-            hotelInfo.append("Hotel: ").append(hotel.getName()).append("\n");
-            hotelInfo.append("Ciudad: ").append(hotel.getCity()).append("\n");
-            hotelInfo.append("Tipo de Alojamiento: ").append(hotel.getAccommodationType()).append("\n");
-            hotelInfo.append("Calificación: ").append(hotel.getRating()).append("/5\n");
-            hotelInfo.append("Incluye Almuerzo: ").append(hotel.isIncludeLunch() ? "Sí" : "No").append("\n");
-            hotelInfo.append("Habitaciones Disponibles:\n");
+            hotelInfo.append("Hotel: ").append(hotel.getName())
+                    .append(", Calificación: ").append(hotel.getRating())
+                    .append("\nHabitaciones Disponibles:\n");
 
             for (Room room : hotel.getRooms()) {
                 if (room.isAvailable(startDate, endDate) && room.getCapacity() >= (adults + children)) {
                     hasAvailableRooms = true;
-
-                    // Calcular el precio total ajustado
-                    long daysOfStay = java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate);
-                    double basePrice = room.getPricePerNight() * daysOfStay;
-                    double adjustedPrice = calculateAdjustedPrice(basePrice, startDate, endDate);
-
-                    // Agregar detalles de la habitación
-                    hotelInfo.append(" - Tipo de Habitación: ").append(room.getType()).append("\n");
-                    hotelInfo.append("   Características: ").append(room.getFeatures()).append("\n");
-                    hotelInfo.append("   Capacidad: ").append(room.getAdultCapacity())
-                            .append(" adultos, ").append(room.getChildCapacity()).append(" niños\n");
-                    hotelInfo.append("   Precio por noche: $").append(room.getPricePerNight()).append("\n");
-                    hotelInfo.append("   Precio Total Ajustado: $").append(adjustedPrice).append("\n");
+                    hotelInfo.append(" - ").append(room.getType())
+                            .append(", Precio: $").append(room.getPricePerNight()).append("\n");
                 }
             }
 
@@ -68,52 +59,90 @@ public class HotelService implements IHotelService {
             }
         }
 
-        return filteredHotels;
-    }
-
-    // Método para calcular el precio ajustado con descuentos y aumentos
-    private double calculateAdjustedPrice(double basePrice, LocalDate startDate, LocalDate endDate) {
-        boolean isEndOfMonth = endDate.getDayOfMonth() > (endDate.lengthOfMonth() - 5);
-        boolean isMidMonth = (startDate.getDayOfMonth() >= 10 && endDate.getDayOfMonth() <= 15);
-        boolean isDiscountPeriod = (startDate.getDayOfMonth() >= 5 && endDate.getDayOfMonth() <= 10);
-
-        if (isEndOfMonth) {
-            return basePrice * 1.15; // Aumento del 15%
-        } else if (isMidMonth) {
-            return basePrice * 1.10; // Aumento del 10%
-        } else if (isDiscountPeriod) {
-            return basePrice * 0.92; // Descuento del 8%
+        if (filteredHotels.isEmpty()) {
+            throw new IllegalStateException("No se encontraron hoteles disponibles para los criterios ingresados.");
         }
-        return basePrice; // Precio base si no hay ajustes
+
+        return filteredHotels;
     }
 
     @Override
     public List<String> confirmRooms(String hotelName, LocalDate startDate, LocalDate endDate,
-                                              int adults, int children, int roomsRequired) {
-        List<String> availableRoomDetails = new ArrayList<>();
+                                     int adults, int children, int roomsRequired) {
+        if (hotelName == null || hotelName.isBlank()) throw new IllegalArgumentException("El nombre del hotel no puede estar vacío.");
+        if (startDate == null || endDate == null || !startDate.isBefore(endDate)) {
+            throw new IllegalArgumentException("Las fechas de inicio y fin no son válidas.");
+        }
 
         for (Hotel hotel : hotels) {
             if (!hotel.getName().equalsIgnoreCase(hotelName)) continue;
 
+            List<String> availableRooms = new ArrayList<>();
             int roomCount = 0;
+
             for (Room room : hotel.getRooms()) {
                 if (room.isAvailable(startDate, endDate) && room.getCapacity() >= (adults + children)) {
+                    availableRooms.add("Tipo: " + room.getType() + ", Características: " + room.getFeatures());
                     roomCount++;
-                    availableRoomDetails.add("Tipo de Habitación: " + room.getType() +
-                            "\nCaracterísticas: " + room.getFeatures() +
-                            "\nPrecio por noche: $" + room.getPricePerNight() +
-                            "\n-----------------------------");
                 }
                 if (roomCount == roomsRequired) break;
             }
 
-            if (availableRoomDetails.isEmpty()) {
-                availableRoomDetails.add("No hay habitaciones disponibles para las fechas y condiciones dadas.");
+            if (availableRooms.isEmpty()) {
+                throw new IllegalStateException("No hay habitaciones disponibles en este hotel.");
             }
-            return availableRoomDetails;
+
+            return availableRooms;
         }
 
-        availableRoomDetails.add("El hotel especificado no existe.");
-        return availableRoomDetails;
+        throw new IllegalArgumentException("El hotel especificado no existe.");
+    }
+
+    @Override
+    public String makeReservation(String firstName, String lastName, String email, String nationality,
+                                  String phoneNumber, String arrivalTime, LocalDate startDate,
+                                  LocalDate endDate, int adults, int children) {
+        if (firstName == null || lastName == null || email == null || phoneNumber == null) {
+            throw new IllegalArgumentException("Los datos personales no pueden estar vacíos.");
+        }
+        if (startDate == null || endDate == null || !startDate.isBefore(endDate)) {
+            throw new IllegalArgumentException("Las fechas de inicio y fin no son válidas.");
+        }
+
+        List<Hotel> availableHotels = new ArrayList<>();
+        for (Hotel hotel : hotels) {
+            for (Room room : hotel.getRooms()) {
+                if (room.isAvailable(startDate, endDate) && room.getCapacity() >= (adults + children)) {
+                    availableHotels.add(hotel);
+                    break;
+                }
+            }
+        }
+
+        if (availableHotels.isEmpty()) {
+            throw new IllegalStateException("No hay hoteles con habitaciones disponibles para las fechas y condiciones indicadas.");
+        }
+
+        // Selección del hotel y habitación
+        Hotel selectedHotel = availableHotels.get(0);
+        Room selectedRoom = selectedHotel.getRooms().stream()
+                .filter(room -> room.isAvailable(startDate, endDate) && room.getCapacity() >= (adults + children))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No hay habitaciones disponibles en el hotel seleccionado."));
+
+        // Crear reserva
+        Reservation reservation = new Reservation(
+                firstName, lastName, email, nationality, phoneNumber,
+                startDate, endDate, adults, children, 1, selectedRoom.getType(), arrivalTime
+        );
+
+        selectedRoom.setAvailability(false);
+        selectedHotel.addReservation(reservation);
+
+        return "Reserva realizada con éxito.\n" +
+                "Hotel: " + selectedHotel.getName() + "\n" +
+                "Habitación: " + selectedRoom.getType() + "\n" +
+                "Fecha de llegada: " + startDate + "\n" +
+                "Fecha de salida: " + endDate;
     }
 }

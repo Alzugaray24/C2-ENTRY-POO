@@ -11,7 +11,7 @@ public class Hotel {
     private double rating; // Calificación del 1 al 5
     private boolean includesLunch; // Indica si incluye almuerzo (por ejemplo, para Día de Sol)
     private List<Room> rooms; // Lista de habitaciones
-    private List<Room> reservations; // Lista de reservaciones
+    private List<Reservation> reservations; // Lista de reservaciones
 
     // Constructor
     public Hotel(String name, String city, AccommodationType accommodationType, double rating, boolean includesLunch) {
@@ -21,7 +21,7 @@ public class Hotel {
         this.rating = rating;
         this.includesLunch = includesLunch;
         this.rooms = new ArrayList<>();
-        this.reservations = new ArrayList<Room>();
+        this.reservations = new ArrayList<Reservation>();
     }
 
     // Getters and Setters
@@ -81,11 +81,11 @@ public class Hotel {
         this.rooms = rooms;
     }
 
-    public List<Room> getReservations() {
+    public List<Reservation> getReservations() {
         return reservations;
     }
 
-    public void setReservations(List<Room> reservations) {
+    public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
 
@@ -94,7 +94,7 @@ public class Hotel {
         this.rooms.add(room);
     }
 
-    public void addReservation(Room reservation) {
+    public void addReservation(Reservation reservation) {
         this.reservations.add(reservation);
     }
 }
