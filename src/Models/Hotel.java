@@ -33,6 +33,10 @@ public class Hotel {
         this.name = name;
     }
 
+    public boolean isIncludeLunch() {
+        return includesLunch;
+    }
+
     public String getCity() {
         return city;
     }
