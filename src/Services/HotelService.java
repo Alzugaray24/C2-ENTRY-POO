@@ -136,7 +136,7 @@ public class HotelService implements IHotelService {
         // Crear la reserva
         Reservation reservation = new Reservation(
                 firstName, lastName, email, nationality, phoneNumber,
-                startDate, endDate, adults, children, 1, selectedRoom.getType(), arrivalTime, birthday, 0
+                startDate, endDate, adults, children, selectedRoom.getType(), birthday
         );
 
         // Actualizar la habitación y agregar la reserva al hotel
