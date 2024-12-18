@@ -11,12 +11,13 @@ public class Hotel extends Alojamiento {
 
     }
 
-    public Hotel(String nombre, Date fechaFin, Date fechaInicio, Double precioBase, List<Habitacion> habitaciones, String tipoAlojamiento, String ciudad) {
-        super(nombre, fechaFin, fechaInicio, precioBase, habitaciones, tipoAlojamiento, ciudad);
+    public Hotel(String nombre, Date fechaFin, Date fechaInicio, Double precioBase, List<Habitacion> habitaciones, String tipoAlojamiento, String ciudad, Float calificacion) {
+        super(nombre, fechaFin, fechaInicio, precioBase, habitaciones, tipoAlojamiento, ciudad, calificacion);
     }
 
     @Override
     public String decorarAlojamiento() {
-        return "";
+        return "Decorando hotel...";
     }
+
 }

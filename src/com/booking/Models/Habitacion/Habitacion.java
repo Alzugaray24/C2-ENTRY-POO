@@ -26,6 +26,7 @@ public class Habitacion {
         this.precioBase = precioBase;
     }
 
+
     public void mostrarInformacion() {
         System.out.println("Información de la Habitación:");
         System.out.println("Tipo de Habitación: " + tipoDeHabitacion);
@@ -33,6 +34,17 @@ public class Habitacion {
         System.out.println("Precio Base: $" + precioBase);
         System.out.println("Precio Total: $" + precio);
         System.out.println("Capacidad: " + cantidadAdultos + " adultos, " + cantidadMenores + " menores");
+    }
+
+    @Override
+    public String toString() {
+        return "Habitacion:\n" +
+                "  Tipo de Habitación: " + tipoDeHabitacion + "\n" +
+                "  Descripción: " + descripcion + "\n" +
+                "  Precio Base: $" + precioBase + "\n" +
+                "  Precio Total: $" + precio + "\n" +
+                "  Disponibilidad: " + (disponibilidad ? "Disponible" : "No Disponible") + "\n" +
+                "  Capacidad: " + cantidadAdultos + " adultos, " + cantidadMenores + " menores";
     }
 
     public void mostrarDisponibilidad() {

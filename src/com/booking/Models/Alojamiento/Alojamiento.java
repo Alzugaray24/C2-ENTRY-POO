@@ -12,6 +12,7 @@ public abstract class Alojamiento {
     private String tipoAlojamiento;
     private Double precioBase;
     private List<Habitacion> habitaciones;
+    private Float calificacion;
     private Date fechaInicio;
     private Date fechaFin;
 
@@ -19,7 +20,7 @@ public abstract class Alojamiento {
 
     }
 
-    public Alojamiento(String nombre, Date fechaFin, Date fechaInicio, Double precioBase, List<Habitacion> habitaciones, String tipoAlojamiento, String ciudad) {
+    public Alojamiento(String nombre, Date fechaFin, Date fechaInicio, Double precioBase, List<Habitacion> habitaciones, String tipoAlojamiento, String ciudad, Float calificacion) {
         this.nombre = nombre;
         this.fechaFin = fechaFin;
         this.fechaInicio = fechaInicio;
@@ -27,6 +28,7 @@ public abstract class Alojamiento {
         this.habitaciones = habitaciones;
         this.tipoAlojamiento = tipoAlojamiento;
         this.ciudad = ciudad;
+        this.calificacion = calificacion;
     }
 
 
@@ -67,6 +69,23 @@ public abstract class Alojamiento {
         }
 
         return 0.0;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Alojamiento:\n");
+        sb.append("Nombre: ").append(nombre).append("\n");
+        sb.append("Ciudad: ").append(ciudad).append("\n");
+        sb.append("Tipo de Alojamiento: ").append(tipoAlojamiento).append("\n");
+        sb.append("Precio Base: $").append(precioBase).append("\n");
+        sb.append("Fecha de Inicio: ").append(fechaInicio).append("\n");
+        sb.append("Fecha de Fin: ").append(fechaFin).append("\n");
+        sb.append("Habitaciones:\n");
+        for (Habitacion habitacion : habitaciones) {
+            sb.append(habitacion).append("\n");
+        }
+        return sb.toString();
     }
 
     public String getNombre() {
@@ -123,5 +142,13 @@ public abstract class Alojamiento {
 
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
+    }
+
+    public Float getCalificacion() {
+        return calificacion;
+    }
+
+    public void setCalificacion(Float calificacion) {
+        this.calificacion = calificacion;
     }
 }
