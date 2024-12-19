@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 public class Cliente {
 
-    // Atributos
     private String nombre;
     private String apellido;
     private String correo;
@@ -27,7 +26,6 @@ public class Cliente {
         this.reservaData = reservaData;
     }
 
-    // Getters y Setters
     public String getNombre() {
         return nombre;
     }

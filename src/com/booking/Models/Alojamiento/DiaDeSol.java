@@ -1,6 +1,7 @@
 package com.booking.Models.Alojamiento;
 
 import com.booking.Models.Habitacion.Habitacion;
+import com.booking.Models.Reserva.ReservaData;
 
 import java.util.Date;
 import java.util.List;
@@ -13,8 +14,8 @@ public class DiaDeSol extends Alojamiento {
     public DiaDeSol() {
     }
 
-    public DiaDeSol(String nombre, Date fechaFin, Date fechaInicio, Double precioBase, List<Habitacion> habitaciones, String tipoAlojamiento, String ciudad, Float calificacion, Boolean incluyeAlmuerzo, Boolean incluyeRefrigerio) {
-        super(nombre, fechaFin, fechaInicio, precioBase, habitaciones, tipoAlojamiento, ciudad, calificacion);
+    public DiaDeSol(String nombre, String ciudad, String tipoAlojamiento, Double precioBase, List<Habitacion> habitaciones, Float calificacion, Date fechaInicio, Date fechaFin, List<ReservaData<?>> registroReservas, Boolean incluyeAlmuerzo, Boolean incluyeRefrigerio) {
+        super(nombre, ciudad, tipoAlojamiento, precioBase, habitaciones, calificacion, fechaInicio, fechaFin, registroReservas);
         this.incluyeAlmuerzo = incluyeAlmuerzo;
         this.incluyeRefrigerio = incluyeRefrigerio;
     }
@@ -36,7 +37,6 @@ public class DiaDeSol extends Alojamiento {
     }
 
     private String getActividades() {
-        // Aquí puedes agregar la lógica para obtener las actividades disponibles en el alojamiento
         return "Piscina, Deportes, Spa, etc.";
     }
 }

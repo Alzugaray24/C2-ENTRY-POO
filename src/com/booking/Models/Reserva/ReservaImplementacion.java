@@ -22,8 +22,14 @@ public class ReservaImplementacion implements IReserva {
 
 
     @Override
-    public void crearReserva() {
-        System.out.println("se creo una reserva");
+    public void crearReserva(List<ReservaData> reservaData, Integer cantidadHabitaciones, Date horaDeLlegada) {
+        System.out.println("Se creó una reserva.");
+
+        for (ReservaData reserva : reservaData) {
+            Alojamiento alojamiento = (Alojamiento) reserva.getAlojamiento();
+
+            alojamiento.agregarReserva(reserva);
+        }
     }
 
     @Override

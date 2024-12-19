@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.booking.Models.Habitacion.Habitacion;
+import com.booking.Models.Reserva.ReservaData;
 
 public class Hotel extends Alojamiento {
 
@@ -11,8 +12,8 @@ public class Hotel extends Alojamiento {
 
     }
 
-    public Hotel(String nombre, Date fechaFin, Date fechaInicio, Double precioBase, List<Habitacion> habitaciones, String tipoAlojamiento, String ciudad, Float calificacion) {
-        super(nombre, fechaFin, fechaInicio, precioBase, habitaciones, tipoAlojamiento, ciudad, calificacion);
+    public Hotel(String nombre, String ciudad, String tipoAlojamiento, Double precioBase, List<Habitacion> habitaciones, Float calificacion, Date fechaInicio, Date fechaFin, List<ReservaData<?>> registroReservas) {
+        super(nombre, ciudad, tipoAlojamiento, precioBase, habitaciones, calificacion, fechaInicio, fechaFin, registroReservas);
     }
 
     @Override
